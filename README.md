@@ -3,6 +3,8 @@
 # Combination of all files output also left
 
 
+
+
 This repository contains two Python scripts for analyzing emotions and sentiments in text:
 
 1. `emotion.py`: Uses BERT-based model for emotion detection
