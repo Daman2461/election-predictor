@@ -1,5 +1,7 @@
 # Incomplete only contains emotion and sentiment (Fuzzy and Political Polarization left)
 
+# Combination of all files output also left
+
 
 This repository contains two Python scripts for analyzing emotions and sentiments in text:
 
