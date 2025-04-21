@@ -32,7 +32,7 @@ def get_emotion_intensities(text, threshold=0.3):
     return emotion_intensities
 
 if __name__ == "__main__":
-    sample_text = "I messed up the presentation a bit but, everyone feels misunderstood sometimes. It'll get better right?"
+    sample_text = ""
     
     # Get emotion intensities with a threshold of 0.4 instead of 0.3 (change made here)
     intensities = get_emotion_intensities(sample_text, threshold=0.4)
