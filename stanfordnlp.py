@@ -52,9 +52,16 @@ Meanwhile, some businesses struggled to recover from the recent storms."""
         print(f"  Sentiment: {senti}")
         print(f"  Probabilities: {senti_dist}")
 
-    # Also show the average sentiment distribution
+    # Show the average sentiment distribution
     avg_sentiment = analyzer.average_sentiments(results)
-    print("\nAverage Sentiment Distribution:")
     classes = ['Very Negative', 'Negative', 'Neutral', 'Positive', 'Very Positive']
-    for cls, prob in zip(classes, avg_sentiment):
+    
+    # Map classes to avg probs
+    avg_sentiment_dict = {cls: prob for cls, prob in zip(classes, avg_sentiment)}
+    
+    # Sort by probability (highest first)
+    sorted_avg_sentiment = sorted(avg_sentiment_dict.items(), key=lambda x: -x[1])
+
+    print("\nAverage Sentiment Distribution (Sorted):")
+    for cls, prob in sorted_avg_sentiment:
         print(f"{cls}: {prob:.4f}")
