@@ -1,45 +1,43 @@
-# Incomplete only contains emotion and sentiment (Fuzzy and Political Polarization left)
+# Election Predictor
 
-# Combination of all files output also leftt
+This repository contains a collection of Python scripts for analyzing various aspects of text, including emotions, sentiments, and more.
 
-
-
-This repository contains two Python scripts for analyzing emotions and sentiments in text:
+## Available Scripts
 
 1. `emotion.py`: Uses BERT-based model for emotion detection
 2. `stanfordnlp.py`: Uses Stanford CoreNLP for sentiment analysis
+3. `fuzzy.py`: Implements fuzzy logic for text analysis
+4. `ollama.py`: Integration with Ollama for text processing
+5. `app.py`: Main application interface
+6. `run_all_models.py`: Script to run all analysis models
 
 ## Requirements
 
-### For emotion.py
+### Core Dependencies
 - Python 3.6+
 - PyTorch
 - Transformers library
 - Datasets library
+- Stanford CoreNLP
+- Ollama (for ollama.py)
 
 Install dependencies:
 ```bash
-pip install torch transformers datasets
+pip install -r requirements.txt
 ```
 
-### For stanfordnlp.py
-- Python 3.6+
-- Stanford CoreNLP server running locally
-- stanfordcorenlp Python package
+### Additional Setup
 
-Install dependencies:
-```bash
-pip install stanfordcorenlp
-```
-
-## Setup
-
-### Stanford CoreNLP Setup
+#### Stanford CoreNLP Setup
 1. Download Stanford CoreNLP from [here](https://stanfordnlp.github.io/CoreNLP/download.html)
 2. Start the CoreNLP server:
 ```bash
 java -mx4g -cp "*" edu.stanford.nlp.pipeline.StanfordCoreNLPServer -port 9000 -timeout 15000
 ```
+
+#### Ollama Setup
+1. Install Ollama from [here](https://ollama.ai/)
+2. Start the Ollama service
 
 ## Usage
 
@@ -72,6 +70,14 @@ print(sentiments)
 
 The function returns a list of tuples containing sentences and their sentiment scores.
 
+### Running All Models (run_all_models.py)
+
+To run all analysis models on a text file:
+
+```bash
+python run_all_models.py input_article.txt
+```
+
 ## Example Outputs
 
 ### Emotion Analysis
@@ -91,11 +97,20 @@ The function returns a list of tuples containing sentences and their sentiment s
 ]
 ```
 
+## Project Structure
+
+- `data/`: Directory for input data files
+- `output/`: Directory for analysis results
+- `combine/`: Directory for combined analysis outputs
+- `input_article.txt`: Sample input text file
+
 ## Notes
 
 - The emotion analysis model (`emotion.py`) uses a threshold of 0.3 by default to filter out low-confidence emotions
 - The sentiment analysis (`stanfordnlp.py`) requires a running Stanford CoreNLP server on port 9000
 - Both scripts can process multiple sentences and return detailed analysis results
+- The fuzzy logic implementation (`fuzzy.py`) provides additional text analysis capabilities
+- The Ollama integration (`ollama.py`) offers alternative text processing options
 
 ## License
 
