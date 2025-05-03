@@ -1,6 +1,7 @@
 import re
 import json
 import torch
+import os
 from datasets import load_dataset
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
 from stanfordcorenlp import StanfordCoreNLP
@@ -89,16 +90,14 @@ class PolarizationAnalyzer:
         label = label_mapping.get(predicted_class, "unknown")
         return label
 
-# ---------- Main ----------
+ 
 if __name__ == "__main__":
 
-    # ======= YOUR INPUT TEXT HERE =======
-    text = """he recent tax cuts have sparked heated debate across the nation. While many on the right believe that reducing taxes will stimulate economic growth, critics argue that it primarily benefits the wealthy and increases income inequality. Democratic leaders have called for higher taxes on the rich to fund social programs. Despite the partisan rhetoric, the debate continues to evolve as more data comes in"""
-    print("📋 Input Text:")
-    print(text)
-    print("\n")
+   
+    with open("input_article.txt", "r") as f:
+        text = f.read()
 
-    # ----- Sentiment -----
+ 
     sentiment_analyzer = SentimentAnalyzer()
     sentiments = sentiment_analyzer.get_sentiments(text)
     avg_sentiment = sentiment_analyzer.average_sentiments(sentiments)
@@ -126,7 +125,9 @@ if __name__ == "__main__":
 
     print("🏛️ Political Bias Prediction:")
     print(f"Predicted Bias: {bias}")
-    output_data = {
+
+    # ----- Save Output -----
+    output = {
         "sentiment_analysis": {
             "average_sentiment": avg_sentiment_dict,
             "sorted_average_sentiment": sorted_avg_sentiment
@@ -139,5 +140,21 @@ if __name__ == "__main__":
         }
     }
 
-    with open("analysis_results.json", "w") as json_file:
-        json.dump(output_data, json_file, indent=4)
+    # --- Save to a new file each time ---
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    combine_dir = os.path.join(script_dir, "combine")
+
+    os.makedirs(combine_dir, exist_ok=True)
+
+    counter = 1
+    while True:
+        output_filename = f"output_{counter}.json"
+        output_path = os.path.join(combine_dir, output_filename)
+        if not os.path.exists(output_path):
+            break
+        counter += 1
+
+    with open(output_path, "w") as f:
+        json.dump(output, f, indent=4)
+
+    print(f"\n✅ Output written to {output_path}")
