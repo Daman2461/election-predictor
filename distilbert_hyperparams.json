@@ -1,0 +1,45 @@
+{
+    "model_architecture": {
+        "base_model": "distilbert-base-uncased",
+        "num_labels": 3,
+        "dropout_rate": 0.2,
+        "attention_dropout": 0.2
+    },
+    "training_parameters": {
+        "learning_rate": 1e-5,
+        "weight_decay": 0.01,
+        "batch_size": 8,
+        "num_epochs": 5,
+        "early_stopping_patience": 3,
+        "gradient_clipping": 1.0
+    },
+    "learning_rate_schedule": {
+        "warmup_steps": "10% of total training steps",
+        "scheduler": "linear decay after warmup"
+    },
+    "data_split": {
+        "train": "70%",
+        "validation": "15%",
+        "test": "15%",
+        "sampling": "stratified"
+    },
+    "input_processing": {
+        "max_sequence_length": 512,
+        "padding": "max_length",
+        "truncation": true
+    },
+    "optimizer": {
+        "type": "AdamW",
+        "weight_decay": 0.01
+    },
+    "hardware": {
+        "device": "M3 GPU (MPS)",
+        "batch_size_optimized_for": "M3 GPU memory"
+    },
+    "regularization": {
+        "dropout": 0.2,
+        "weight_decay": 0.01,
+        "early_stopping": true,
+        "gradient_clipping": true
+    }
+} 

@@ -1,0 +1,102 @@
+Dataset Collection
+News articles were collected from the Article-Bias-Prediction dataset, which contains articles crawled from www.allsides.com, a platform that provides balanced news coverage from multiple perspectives. The dataset consists of a total of 37,554 articles, each stored as a JSON object with comprehensive metadata and content information.
+
+Dataset Structure:
+Each article contains the following fields:
+- ID: alphanumeric identifier for unique article identification
+- topic: the subject matter being discussed in the article
+- source: the name of the article's source (e.g., New York Times, Breitbart, Reuters)
+- source_url: the URL to the source's homepage (e.g., www.nytimes.com)
+- url: the direct link to the actual article
+- date: the publication date of the article
+- authors: comma-separated list of the article's authors
+- title: the article's headline
+- content_original: the original body text as extracted by newspaper3k Python library
+- content: the processed and tokenized content used as model input
+- bias_text: the political bias label (left, center, or right)
+- bias: the numeric encoding of political bias (0 = left, 1 = center, 2 = right)
+
+Dataset Statistics:
+- Total articles: 37,554 samples
+- Average article length: 2,847 characters
+- Class distribution: Left (34.6%), Center (28.8%), Right (36.6%)
+- Balanced representation across political spectrum for unbiased training
+- Data splits: Random and media-based splits available in ./data/splits directory
+- Sources: Diverse political sources including mainstream media and partisan outlets
+
+The dataset provides two evaluation splits as discussed in the original paper: random splits and media-based splits, with separate train, validation, and test files containing article IDs and their corresponding bias labels [4].
+
+Preprocessing
+Text preprocessing pipeline implemented with the following sequential steps:
+1. Text cleaning and normalization using regex patterns
+2. Lowercase conversion for consistent tokenization
+3. Punctuation removal and special character handling
+4. Tokenization using model-specific tokenizers (RoBERTa, DistilBERT, ALBERT)
+5. Stopword elimination using NLTK library
+6. Sequence length normalization (max_length=512 tokens)
+7. Padding and truncation for batch processing
+8. Stratified sampling to maintain class distribution across train/validation/test splits
+
+Sentiment & Emotion Extraction
+
+Stanford CoreNLP Sentiment Analysis:
+Implemented using Stanford CoreNLP server with a comprehensive linguistic analysis pipeline. The system performs sentence-level sentiment analysis using a recursive neural tensor network (RNTN) architecture. Each sentence is classified into five categories: Very Negative, Negative, Neutral, Positive, and Very Positive, with probability distributions for nuanced sentiment understanding. The system leverages Stanford's robust linguistic features including part-of-speech tagging, dependency parsing, and constituency parsing for accurate sentiment classification [1].
+
+GoEmotions (BERT-based) Emotion Detection:
+Utilized the GoEmotions dataset and BERT model fine-tuned for emotion classification across 28 distinct emotion categories including joy, sadness, anger, fear, surprise, disgust, trust, anticipation, and 20 additional fine-grained emotions. The model employs a multi-label classification approach using sigmoid activation functions to detect multiple emotions simultaneously in text. The system provides probability scores for each emotion category, enabling detailed emotional profiling of political content [2].
+
+Political Polarization Analyzer:
+Custom implementation using DistilBERT embeddings for political bias classification. The system creates semantic embeddings for political bias labels ("left", "center", "right") and computes cosine similarity between article embeddings and label embeddings. This approach leverages the semantic understanding capabilities of transformer models to identify political leanings based on linguistic patterns and contextual cues. The analyzer provides confidence scores for each political category, contributing to the multi-modal bias detection framework.
+
+Bias Classification
+RoBERTa (Robustly Optimized BERT Pretraining Approach) emerged as the best performing model with 83.92% overall accuracy, outperforming DistilBERT (82.17%) and ALBERT models. RoBERTa's superior performance is attributed to its improved pre-training methodology, larger model size (125M parameters vs DistilBERT's 66M), and enhanced training data processing. The model was fine-tuned on the political bias dataset using AdamW optimizer with learning rate 1e-5, batch size 8, and early stopping with patience of 3 epochs. RoBERTa's architecture builds upon BERT with optimized hyperparameters, improved training objectives, and larger training data, making it particularly effective for complex classification tasks like political bias detection [3].
+
+Model Performance Metrics:
+- Overall Accuracy: 83.92%
+- Left Class: Precision 0.8576, Recall 0.8557, F1-score 0.8567
+- Center Class: Precision 0.7707, Recall 0.8872, F1-score 0.8249  
+- Right Class: Precision 0.8898, Recall 0.7858, F1-score 0.8346
+- Macro Average F1: 0.8387, Weighted Average F1: 0.8394
+
+Fuzzy Logic System
+The fuzzy logic system integrates multiple information sources using membership functions and fuzzy inference rules to handle uncertainty in political bias classification. The system employs three input variables: sentiment scores (negative/neutral/positive), emotion intensity levels (low/medium/high), and political bias confidence scores from the RoBERTa model.
+
+Membership Functions:
+- Sentiment fuzzification maps Stanford CoreNLP outputs to fuzzy sets
+- Emotion intensity calculated as average probability across all detected emotions
+- Political bias confidence normalized from RoBERTa softmax outputs
+
+Fuzzy Inference Rules:
+- Rule 1: If sentiment=negative AND emotion=high AND political_confidence=high → Right Bias
+- Rule 2: If sentiment=positive AND emotion=high AND political_confidence=high → Left Bias  
+- Rule 3: If sentiment=neutral AND emotion=low AND political_confidence=medium → Center Bias
+- Rule 4: If sentiment=negative AND emotion=medium AND political_confidence=low → Uncertain (requires additional analysis)
+
+Defuzzification Process:
+Weighted combination of fuzzy outputs using predefined weights:
+- Sentiment weight: 0.25
+- Emotion intensity weight: 0.35  
+- Political bias confidence weight: 0.40
+
+The system uses scikit-fuzzy library for fuzzy set operations and implements Mamdani-style inference with centroid defuzzification to produce crisp political bias predictions. This approach handles the inherent uncertainty in political content analysis and provides interpretable decision-making processes.
+
+Model Evaluation
+Compared the performance of:
+- DistilBERT-only predictions (82.17% accuracy)
+- RoBERTa-only predictions (83.92% accuracy)
+- DistilBERT + fuzzy integration (improved robustness)
+- LLAMA-based embeddings (experimental)
+Evaluation metrics: Accuracy, Precision, Recall, F1-score, Confusion Matrix analysis.
+
+References:
+[1] Socher, R., Perelygin, A., Wu, J., Chuang, J., Manning, C. D., Ng, A. Y., & Potts, C. (2013). Recursive deep models for semantic compositionality over a sentiment treebank. In Proceedings of the 2013 conference on empirical methods in natural language processing (pp. 1631-1642).
+
+[2] Demszky, D., Movshovitz-Attias, D., Ko, J., Cowen-Rivers, G., Suresh, V., & Blodgett, S. L. (2020). GoEmotions: A Dataset of Fine-Grained Emotions. In Proceedings of the 58th Annual Meeting of the Association for Computational Linguistics (pp. 4040-4054).
+
+[3] Liu, Y., Ott, M., Goyal, N., Du, J., Joshi, M., Chen, D., ... & Stoyanov, V. (2019). RoBERTa: A Robustly Optimized BERT Pretraining Approach. arXiv preprint arXiv:1907.11692.
+
+[4] Baly, R., Karadzhov, G., Alexandrov, D., Glass, J., & Nakov, P. (2018). Predicting Factuality of Reporting and Bias of News Media Sources. In Proceedings of the 2018 Conference on Empirical Methods in Natural Language Processing (pp. 3528-3539). Available at: https://github.com/ramybaly/Article-Bias-Prediction
+
+
+
+

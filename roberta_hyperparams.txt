@@ -1,0 +1,170 @@
+ROBERTA HYPERPARAMETERS DOCUMENTATION
+====================================
+
+This document details the hyperparameters used for training the RoBERTa model for political bias classification, including explanations of parameter choices and their impact on model performance.
+
+MODEL ARCHITECTURE
+-----------------
+Base Model: roberta-base
+- Chosen for its superior performance over BERT and DistilBERT
+- Larger model with more parameters for better feature extraction
+- Improved pre-training methodology
+
+Number of Labels: 3 (Left, Center, Right)
+- Matches the political bias classification task requirements
+- Provides clear, distinct categories for classification
+
+Dropout Rate: 0.2
+- Helps prevent overfitting by randomly deactivating 20% of neurons
+- Balanced to maintain model capacity while preventing overfitting
+
+Attention Dropout: 0.2
+- Applies dropout to attention weights
+- Helps model focus on different aspects of the text
+
+TRAINING PARAMETERS
+------------------
+Learning Rate: 1e-5
+- Small learning rate for stable fine-tuning
+- Prevents large parameter updates that could forget pre-trained knowledge
+
+Weight Decay: 0.01
+- L2 regularization to prevent large weights
+- Helps model generalize better to unseen data
+
+Batch Size: 8
+- Optimized for M3 GPU memory constraints
+- Small enough to prevent memory issues, large enough for stable training
+
+Number of Epochs: 5
+- Sufficient for convergence while preventing overfitting
+- Early stopping typically triggers before reaching 5 epochs
+
+Early Stopping Patience: 3
+- Stops training if no improvement for 3 epochs
+- Prevents wasting computation on non-improving training
+
+Gradient Clipping: 1.0
+- Prevents exploding gradients
+- Stabilizes training process
+
+LEARNING RATE SCHEDULE
+---------------------
+Warmup Steps: 10% of total training steps
+- Gradually increases learning rate at start
+- Helps model adapt to task-specific features
+
+Scheduler: Linear decay after warmup
+- Smoothly reduces learning rate
+- Helps fine-tune model in later stages
+
+DATA SPLIT
+----------
+Training Set: 70%
+- Sufficient data for learning patterns
+- Maintains enough data for validation and testing
+
+Validation Set: 15%
+- Used for early stopping and model selection
+- Large enough for reliable performance estimates
+
+Test Set: 15%
+- Unseen data for final evaluation
+- Provides unbiased performance metrics
+
+Sampling Method: Stratified
+- Maintains class distribution across splits
+- Prevents bias in training and evaluation
+
+INPUT PROCESSING
+---------------
+Max Sequence Length: 512 tokens
+- Standard length for RoBERTa
+- Sufficient for most political articles
+
+Padding: max_length
+- Efficient batch processing
+- Consistent input sizes
+
+Truncation: Enabled
+- Handles longer articles
+- Focuses on most important content
+
+OPTIMIZER
+---------
+Type: AdamW
+- Improved version of Adam optimizer
+- Better weight decay implementation
+
+Weight Decay: 0.01
+- Consistent with training parameters
+- Helps prevent overfitting
+
+HARDWARE CONFIGURATION
+---------------------
+Device: M3 GPU (MPS)
+- Utilizes Apple's Metal Performance Shaders
+- Optimized for M-series Macs
+
+Batch Size Optimization: Optimized for M3 GPU memory
+- Prevents out-of-memory errors
+- Maintains training stability
+
+REGULARIZATION TECHNIQUES
+------------------------
+Dropout: 0.2
+- Randomly deactivates neurons during training
+- Forces model to learn robust features
+
+Weight Decay: 0.01
+- Penalizes large weights
+- Encourages simpler models
+
+Early Stopping: Enabled
+- Prevents overfitting
+- Saves best model based on validation loss
+
+Gradient Clipping: Enabled
+- Prevents gradient explosions
+- Stabilizes training
+
+PERFORMANCE METRICS
+------------------
+Overall Accuracy: 83.92%
+
+Per-class Performance:
+Left:
+- Precision: 0.8576
+- Recall: 0.8557
+- F1-score: 0.8567
+- Support: 13005
+
+Center:
+- Precision: 0.7707
+- Recall: 0.8872
+- F1-score: 0.8249
+- Support: 10815
+
+Right:
+- Precision: 0.8898
+- Recall: 0.7858
+- F1-score: 0.8346
+- Support: 13734
+
+Macro Average F1: 0.8387
+Weighted Average F1: 0.8394
+
+Confusion Matrix Analysis:
+- Left class: Strong performance with 11,129 correct predictions
+- Center class: Excellent recall with 9,595 correct predictions
+- Right class: High precision with 10,792 correct predictions
+
+NOTES
+-----
+- The model shows improved performance over DistilBERT (83.92% vs 82.17% accuracy)
+- Better balanced performance across all three classes
+- Strong precision for Left and Right classes
+- Excellent recall for Center class
+- Confusion matrix shows good separation between classes
+- Model demonstrates robust generalization capabilities
+- Performance metrics indicate reliable political bias classification 

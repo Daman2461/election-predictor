@@ -1,0 +1,81 @@
+ALBERT Model Hyperparameters
+===========================
+
+Model Configuration
+-----------------
+Model: albert-base-v2
+Parameters: ~12M
+Tokenizer: AutoTokenizer from albert-base-v2
+Max Sequence Length: 128
+
+Training Parameters
+-----------------
+Batch Size: 32
+Gradient Accumulation Steps: 2
+Learning Rate: 1e-5
+Weight Decay: 0.01
+Optimizer: AdamW
+Scheduler: Linear with warmup
+Warmup Steps: 10% of total steps
+
+Model Architecture
+----------------
+Dropout: 0.1
+Attention Dropout: 0.1
+Hidden Dropout: 0.1
+Number of Labels: 3
+
+Data Processing
+-------------
+Train/Val/Test Split: 70/15/15
+Stratified Split: Yes
+Random Seed: 42
+
+Hardware Configuration
+--------------------
+Device: Apple M3 GPU (Metal)
+DataLoader Workers: 2
+Mixed Precision: No (using float32)
+
+Output Configuration
+------------------
+Model Save Path: /Users/daman/Downloads/Article-Bias-Prediction-main/output/albert_model
+Evaluation Results: /Users/daman/Downloads/Article-Bias-Prediction-main/output/albert_model/evaluation_results.json
+
+Evaluation Results
+----------------
+Overall Accuracy: 0.7891 (78.91%)
+
+Class-wise Performance:
+Class 0:
+- Precision: 0.81
+- Recall: 0.77
+- F1-score: 0.79
+- Support: 13005
+
+Class 1:
+- Precision: 0.79
+- Recall: 0.74
+- F1-score: 0.76
+- Support: 10815
+
+Class 2:
+- Precision: 0.77
+- Recall: 0.85
+- F1-score: 0.81
+- Support: 13734
+
+Confusion Matrix:
+[[ 9992  1194  1819]
+ [ 1194  7986  1635]
+ [ 1178   901 11655]]
+
+Notes
+-----
+- Model uses MPS (Metal Performance Shaders) for GPU acceleration
+- Memory efficient architecture suitable for M3
+- Uses standard ALBERT configuration with minor adjustments for bias classification
+- Evaluation includes accuracy, classification report, and confusion matrix
+- Best performance on Class 2 (Recall: 0.85)
+- Most balanced performance on Class 0 (Precision: 0.81)
+- Class 1 shows slightly lower performance (F1: 0.76) 
